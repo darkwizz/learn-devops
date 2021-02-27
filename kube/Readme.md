@@ -60,5 +60,23 @@ spec:
       image: ubuntu
   restartPolicy: Always
 ```
+this can be edited (among the other ways) by running `kubectl edit`
+```bash
+$ kubectl edit pod <pod-id>
+```
+> or the same change can be made for a whole deployment
 
 but in this specific case the issue happened because the image which was used for the deployment `first-dep-ever` does not have any command and just starts, immediately finishes its work and restarts again.
+
+#### Debugging
+```bash
+$ kubectl describe <pod-name>
+```
+
+```bash
+$ kubectl logs <pod-name>
+```
+
+```bash
+$ kubectl exec -it <pod-name> -- <shell>
+```
