@@ -80,3 +80,27 @@ $ kubectl logs <pod-name>
 ```bash
 $ kubectl exec -it <pod-name> -- <shell>
 ```
+
+---
+
+#### minikube-specific
+When creating an external service:
+```yaml
+spec:
+  # some other sections
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30001
+```
+
+in `minikube` there will be **no** external IP:
+![external service external IP in minikube](resources/external-service-minikube-IP.png)
+
+to access the service:
+```bash
+$ minikube service <service-name>
+```
+![external service access in minikube](resources/access-external-service-minikube.png)

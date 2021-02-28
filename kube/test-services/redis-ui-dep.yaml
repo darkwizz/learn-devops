@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-ui
+  labels:
+    app: redis-ui
+spec:
+  selector:
+    matchLabels:
+      app: redis-ui
+  template:
+    metadata:
+      labels:
+        app: redis-ui
+    spec:
+      containers:
+      - name: redis-ui-test
+        image: rediscommander/redis-commander
+        # resources:
+        #   limits:
+        #     memory: "128Mi"
+        #     cpu: "500m"
+        ports:
+        - containerPort: 8081
+        env:
+          - name: REDIS_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: test-config
+                key: redis_host
+          - name: REDIS_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: test-config
+                key: redis_port
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-ui-svc
+spec:
+  selector:
+    app: redis-ui
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30001
