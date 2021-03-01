@@ -104,3 +104,57 @@ to access the service:
 $ minikube service <service-name>
 ```
 ![external service access in minikube](resources/access-external-service-minikube.png)
+
+---
+
+```bash
+$ kubectl api-resources
+```
+the way to get possible resource kinds and the shortnames
+
+
+### Ingress
+
+* To enable an Ingress Controller in minikube:
+```bash
+$ minikube addons enable ingress
+```
+
+* no need to use External Services for it;
+* an example:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-demo
+  namespace: kubernetes-dashboard
+spec:
+  rules:
+    - host: ingress-demo-dashboard.com
+      http:
+        paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: kubernetes-dashboard
+              port:
+                number: 80
+```
+> minikube already has configured and working services, therefore it is more convenient to define an ingress for it
+
+* also DNS resolving should be set up:
+```bash
+# get the IP of the ingress
+$ kubectl get ingress -n kubernetes-dashboard
+NAME           CLASS    HOSTS                        ADDRESS        PORTS   AGE
+ingress-demo   <none>   ingress-demo-dashboard.com   192.168.49.2   80      51s
+
+
+$ vim /etc/hosts
+
+-------
+# put the IP and the name specified in HOSTS
+
+```
