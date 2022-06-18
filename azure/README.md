@@ -63,7 +63,26 @@ To pass parameters in the command instead of using those specified in the ARM `.
 $ parameters="{\"vnetName\":{\"value\":\"VNet-001\"},\"costCenterIO\":{\"value\":\"54321\"},\"ownerName\":{\"value\":\"John Smith\"}}"
 $ templateFile=./example-arm-templates/vnets.json
 $ today=$(date +"%Y-%m-%d")
-$ deploymentName="DeployLocalTemplate-$today"
+$ deploymentName="DeployLocalTemplate-2-$today"
 
 $ az deployment group create --name $deploymentName --template-file $templateFile --parameters "$parameters"
+```
+
+Use a separate JSON parameters file:
+```bash
+$ templateFile=./example-arm-templates/vnets.json
+$ templateParametersFile=./example-arm-templates/vnets.parameters.json
+$ today=$(date +"%Y-%m-%d")
+$ deploymentName="DeployLocalTemplate-3-$today"
+
+$ az deployment group create --name $deploymentName --template-file $templateFile --parameters $templateParametersFile
+```
+
+To pass a template from the internet:
+```bash
+$ templateUri=https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/quickstarts/microsoft.storage/storage-account-create/azuredeploy.json
+$ today=$(date +"%Y-%m-%d")
+$ deploymentName="DeployLocalTemplate-4-$today"
+
+$ az deployment group create --name $deploymentName --template-uri $templateUri
 ```
