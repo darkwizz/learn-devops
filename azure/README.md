@@ -86,3 +86,57 @@ $ deploymentName="DeployLocalTemplate-4-$today"
 
 $ az deployment group create --name $deploymentName --template-uri $templateUri
 ```
+
+#### Specifying multiple deployments in one template
+##### Using linked templates
+The JSON for that is in `./example/arm-templates/linked-templates.json`:
+```bash
+$ templateFile=./example-arm-templates/linked-templates.json
+$ today=$(date +"%Y-%m-%d")
+$ deploymentName="DeployLocalTemplate-5-$today"
+
+$ az deployment group create --template-file $templateFile
+# if omitted "--name" the deployment will be called from the passed template file name
+```
+
+##### Using nested templates
+This looks like this:
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccountName": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "name": "nestedTemplate1",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2019-04-01",
+              "name": "[parameters('storageAccountName')]",
+              "location": "West US",
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "kind": "StorageV2"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
+```
